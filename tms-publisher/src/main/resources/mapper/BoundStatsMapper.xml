@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.tms.publisher.mapper.BoundStatsMapper">
+
+
+    <select id="selectBoundSortCount" resultType="com.atguigu.tms.publisher.beans.BoundSortBean" >
+        select
+            province_name as ProvinceName,
+            sum(sort_count) as `value`
+        from (
+            select
+                cur_date,
+                org_id,
+                org_name,
+                city_id,
+                city_name,
+                province_id,
+                province_name,
+                argMaxMerge(sort_count) as sort_count
+            from dws_bound_org_sort_day
+            where toYYYYMMDD(cur_date) = #{date}
+            group by cur_date,org_id,org_name,city_id,city_name,province_id,province_name
+        )
+        group by province_name;
+    </select>
+
+
+</mapper>

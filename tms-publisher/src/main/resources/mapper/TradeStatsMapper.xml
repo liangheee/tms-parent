@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.tms.publisher.mapper.TradeStatsMapper">
+
+
+    <select id="selectOrderAmount" resultType="java.math.BigDecimal" >
+        select
+            sum(order_amount)
+        from (
+            select
+                cur_date,
+                org_id,
+                org_name,
+                city_id,
+                city_name,
+                argMaxMerge(order_amount) as order_amount,
+                argMaxMerge(order_count) as order_count
+            from dws_trade_org_order_day
+            where toYYYYMMDD(cur_date) = #{date}
+            group by cur_date,org_id,org_name,city_id,city_name
+        );
+    </select>
+
+
+</mapper>
